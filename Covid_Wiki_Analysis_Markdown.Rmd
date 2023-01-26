@@ -12,14 +12,14 @@ library(rvest)
 ```
 
 ```{r Task 1}
-#Task 1 Create HTTP request to obtain COVID-19 Wiki page
+##Task 1 Create HTTP request to obtain COVID-19 Wiki page
 covid_wiki_url <- 'https://en.wikipedia.org/w/index.php?title=Template:COVID-19_testing_by_country'
 covid_wiki_response <- GET(covid_wiki_url)
 covid_wiki_response
 ```
 
 ```{r Task 2}
-#Task 2 Extract COVID-19 testing data table from wiki HTML page
+##Task 2 Extract COVID-19 testing data table from wiki HTML page
 covid_root_node <- read_html(covid_wiki_response)
 covid_table <- html_node(covid_root_node, 'table')
 covid_wiki_df <- html_table(covid_table)
@@ -27,23 +27,23 @@ print(covid_wiki_df)
 ```
 
 ```{r Task 3}
-#Task 3 Pre-process and export the extracted data frame
+##Task 3 Pre-process and export the extracted data frame
 preprocess_covid_data_frame <- function(covid_wiki_df) {
   shape <- dim(covid_wiki_df)
 
-#Remove the World row
+##Remove the World row
 covid_wiki_df <- covid_wiki_df[!(covid_wiki_df$`Country or region`=="World"),]
 #Remove the last row
 covid_wiki_df <- covid_wiki_df[1:172, ]
 
-#Remove Units and Ref columns
+##Remove Units and Ref columns
 covid_wiki_df["Ref."] <- NULL
 covid_wiki_df["Units[b]"] <- NULL
 
-#Renaming Columns
+##Renaming Columns
 names(covid_wiki_df) <- c("country", "date", "tested", "confirmed", "confirmed.tested.ratio", "tested.population.ratio", "confirmed.population.ratio")
 
-#Convert column data types
+##Convert column data types
 covid_wiki_df$country <- as.factor(covid_wiki_df$country)
 covid_wiki_df$date <- as.factor(covid_wiki_df$date)
 covid_wiki_df$tested <- as.numeric(gsub(",","",covid_wiki_df$tested))
